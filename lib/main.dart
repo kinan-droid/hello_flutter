@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'modul_02/modul_02_app.dart';
 
 void main() {
   runApp(const PoliwangiProfileApp());
@@ -24,6 +25,8 @@ class PoliwangiProfileApp extends StatelessWidget {
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
+  final String? githubUsername = 'github.com/kinan-droid';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,7 +42,7 @@ class ProfileScreen extends StatelessWidget {
         // ScrollView dipakai agar UI tetap aman saat orientasi landscape atau layar kecil
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24.0),
-    child: Column(
+      child: Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         // Avatar profil
@@ -99,8 +102,8 @@ class ProfileScreen extends StatelessWidget {
             side: const BorderSide(color: Color(0xFFE2E8F0)),
           ),
           color: Colors.white,
-          child: const Padding(
-            padding: EdgeInsets.all(20.0),
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
             child: Column(
               children: [
                 _InfoRow(
@@ -125,6 +128,18 @@ class ProfileScreen extends StatelessWidget {
                   icon: Icons.calendar_today_rounded,
                   label: 'Semester / TA',
                   value: 'Semester 3 (2026/2027)',
+                ),
+                                Divider(height: 24, color: Color(0xFFF1F5F9)),
+                _InfoRow(
+                  icon: Icons.code_rounded,
+                  label: 'Repositori GitHub',
+                  value: githubUsername ?? '(belum diatur)',
+                ),
+                Divider(height: 24, color: Color(0xFFF1F5F9)),
+                _InfoRow(
+                  icon: Icons.star_rounded,
+                  label: 'Fokus Keahlian',
+                  value: 'Mobile UI/UX & Flutter Development',
                 ),
               ],
             ),
@@ -156,10 +171,27 @@ class ProfileScreen extends StatelessWidget {
             ),
           ),
         ),
+        const SizedBox(height: 12),
+
+        SizedBox(
+          width: double.infinity,
+          child: OutlinedButton.icon(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const Modul02App(),
+                ),
+              );
+            },
+            icon: const Icon(Icons.dashboard_rounded),
+            label: const Text('Buka Dashboard Akademik'),
+          ),
+        ),
       ],
     ),
   ),
-      ),
+      )
     );
   }
 }
