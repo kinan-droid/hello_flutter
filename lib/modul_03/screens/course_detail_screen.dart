@@ -1,13 +1,42 @@
 import 'package:flutter/material.dart';
 import '../models/krs_course.dart';
+import 'ubah_sks_screen.dart';
 
-class CourseDetailScreen extends StatelessWidget {
+class CourseDetailScreen extends StatefulWidget {
   const CourseDetailScreen({
     super.key,
     required this.course,
   });
 
   final KrsCourse course;
+
+    @override
+  State<CourseDetailScreen> createState() => _CourseDetailScreenState();
+}
+
+class _CourseDetailScreenState extends State<CourseDetailScreen> {
+  late int _sksSaatIni;
+
+  @override
+  void initState() {
+    super.initState();
+    _sksSaatIni = widget.course.sks;
+  }
+
+  Future<void> _ubahSks() async {
+    final hasil = await Navigator.push<int>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const UbahSksScreen(),
+      ),
+    );
+
+    if (hasil != null && mounted) {
+      setState(() {
+        _sksSaatIni = hasil;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +62,7 @@ class CourseDetailScreen extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             Text(
-              course.name,
+              widget.course.name,
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -41,15 +70,15 @@ class CourseDetailScreen extends StatelessWidget {
             const SizedBox(height: 20),
             _buildInfo(
               'Kode Mata Kuliah',
-              course.code,
+              widget.course.code,
             ),
             _buildInfo(
               'Dosen Pengampu',
-              course.lecturer,
+              widget.course.lecturer,
             ),
             _buildInfo(
               'Jumlah SKS',
-              '${course.sks} SKS',
+              '$_sksSaatIni SKS',
             ),
             const SizedBox(height: 16),
             const Text(
@@ -61,20 +90,32 @@ class CourseDetailScreen extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              course.description.isEmpty
+              widget.course.description.isEmpty
                   ? 'Belum ada deskripsi mata kuliah.'
-                  : course.description,
+                  : widget.course.description,
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             const SizedBox(height: 32),
             SizedBox(
               width: double.infinity,
               child: FilledButton.icon(
-                onPressed: () => Navigator.pop(context),
+                onPressed: () => Navigator.pop(context, _sksSaatIni),
                 icon: const Icon(Icons.arrow_back),
                 label: const Text('Kembali ke Daftar KRS'),
               ),
             ),
+            const SizedBox(height: 16),
+
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+               onPressed: _ubahSks,
+               icon: const Icon(Icons.edit),
+               label: const Text('Ubah Bobot SKS'),
+              ),
+            ),
+
+            const SizedBox(height: 12),
           ],
         ),
       ),

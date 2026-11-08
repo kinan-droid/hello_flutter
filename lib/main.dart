@@ -1,9 +1,18 @@
 import 'package:flutter/material.dart';
 import 'modul_02/modul_02_app.dart';
 import 'modul_03/modul_03_app.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'pengayaan/modul_03/modul_03_fase_b_app.dart';
+import 'modul_04/modul_04_app.dart';
+import 'modul_05/modul_05_app.dart';
+import 'modul_06/modul_06_app.dart';
 
 void main() {
-  runApp(const PoliwangiProfileApp());
+  runApp(
+    const ProviderScope(
+      child: PoliwangiProfileApp(),
+    ),
+  );
 }
 
 class PoliwangiProfileApp extends StatelessWidget {
@@ -206,6 +215,74 @@ class ProfileScreen extends StatelessWidget {
             label: const Text('Buka Aplikasi KRS'),
           ),
         ),
+                const SizedBox(height: 12),
+
+        SizedBox(
+          width: double.infinity,
+          child: OutlinedButton.icon(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const Modul03FaseBApp(),
+                ),
+              );
+            },
+            icon: const Icon(Icons.route_rounded),
+            label: const Text('Modul 03 Fase B - Pengayaan'),
+          ),
+        ),
+        const SizedBox(height: 12),
+
+SizedBox(
+  width: double.infinity,
+  child: OutlinedButton.icon(
+    onPressed: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const Modul04App(),
+        ),
+      );
+    },
+    icon: const Icon(Icons.cloud_download_rounded),
+    label: const Text('Modul 04 - Future & REST API Dasar'),
+  ),
+),
+const SizedBox(height: 12),
+
+SizedBox(
+  width: double.infinity,
+  child: OutlinedButton.icon(
+    onPressed: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const Modul05App(),
+        ),
+      );
+    },
+    icon: const Icon(Icons.checklist_rounded),
+    label: const Text('Modul 05 - Task Manager'),
+  ),
+),
+const SizedBox(height: 12),
+
+SizedBox(
+  width: double.infinity,
+  child: OutlinedButton.icon(
+    onPressed: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const Modul06App(),
+        ),
+      );
+    },
+    icon: const Icon(Icons.lock_person_rounded),
+    label: const Text('Modul 06 - Login & Session'),
+  ),
+),
       ],
     ),
   ),

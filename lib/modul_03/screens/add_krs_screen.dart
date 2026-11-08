@@ -17,6 +17,7 @@ class _AddKrsScreenState extends State<AddKrsScreen> {
   final _sksController = TextEditingController(text: '3');
 
   bool _isSaving = false;
+  bool _isDirty = false;
 
   @override
   void dispose() {
@@ -44,6 +45,7 @@ class _AddKrsScreenState extends State<AddKrsScreen> {
       description: 'Mata kuliah tambahan pada semester ini.',
     );
 
+    _isDirty = false;
     Navigator.pop(context, courseBaru);
   }
 
@@ -68,9 +70,47 @@ class _AddKrsScreenState extends State<AddKrsScreen> {
     return null;
   }
 
+  Future<void> _konfirmasiKeluar(
+  bool didPop,
+  Object? result,
+) async {
+  if (didPop || !_isDirty) return;
+
+  final keluar = await showDialog<bool>(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('Keluar dari Form?'),
+      content: const Text(
+        'Perubahan yang belum disimpan akan hilang. '
+        'Apakah kamu yakin ingin keluar?',
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context, false),
+          child: const Text('Batal'),
+        ),
+        FilledButton(
+          onPressed: () => Navigator.pop(context, true),
+          child: const Text('Keluar'),
+        ),
+      ],
+    ),
+  );
+
+  if (keluar == true && mounted) {
+    setState(() {
+      _isDirty = false;
+    });
+    Navigator.pop(context);
+  }
+}
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return PopScope<Object?>(
+      canPop: !_isDirty,
+      onPopInvokedWithResult: _konfirmasiKeluar,
+      child: Scaffold(
       appBar: AppBar(
         title: const Text('Tambah Mata Kuliah'),
       ),
@@ -91,6 +131,11 @@ class _AddKrsScreenState extends State<AddKrsScreen> {
               const SizedBox(height: 20),
 
               TextFormField(
+                onChanged: (_) {
+                  setState(() {
+                    _isDirty = true;
+                  });
+                },
                 controller: _codeController,
                 decoration: const InputDecoration(
                   labelText: 'Kode Mata Kuliah',
@@ -104,6 +149,11 @@ class _AddKrsScreenState extends State<AddKrsScreen> {
               const SizedBox(height: 16),
 
               TextFormField(
+                onChanged: (_) {
+                  setState(() {
+                    _isDirty = true;
+                  });
+                },
                 controller: _nameController,
                 decoration: const InputDecoration(
                   labelText: 'Nama Mata Kuliah',
@@ -115,6 +165,11 @@ class _AddKrsScreenState extends State<AddKrsScreen> {
               const SizedBox(height: 16),
 
               TextFormField(
+                onChanged: (_) {
+                  setState(() {
+                    _isDirty = true;
+                  });
+                },
                 controller: _lecturerController,
                 decoration: const InputDecoration(
                   labelText: 'Nama Dosen Pengampu',
@@ -126,6 +181,11 @@ class _AddKrsScreenState extends State<AddKrsScreen> {
               const SizedBox(height: 16),
 
               TextFormField(
+                onChanged: (_) {
+                  setState(() {
+                    _isDirty = true;
+                  });
+                },
                 controller: _sksController,
                 decoration: const InputDecoration(
                   labelText: 'Jumlah SKS',
@@ -151,6 +211,7 @@ class _AddKrsScreenState extends State<AddKrsScreen> {
             ],
           ),
         ),
+      ),
       ),
     );
   }

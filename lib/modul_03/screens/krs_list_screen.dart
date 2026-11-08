@@ -19,6 +19,9 @@ class _KrsListScreenState extends State<KrsListScreen> {
   static const int batasSksSemester = 24;
   static const int ambangPeringatanSks = 21;
 
+  String _filterSks = 'Semua';
+  String _urutan = 'Kode A-Z';
+
   int get _totalSks {
     return _courses.fold(0, (total, course) => total + course.sks);
   }
@@ -29,16 +32,38 @@ class _KrsListScreenState extends State<KrsListScreen> {
     );
   }
 
-  Future<void> _bukaDetail(KrsCourse course) async {
-    await Navigator.push<void>(
-      context,
-      MaterialPageRoute<void>(
-        builder: (_) => CourseDetailScreen(course: course),
-      ),
-    );
+Future<void> _bukaDetail(KrsCourse course) async {
+  final hasil = await Navigator.push<int>(
+    context,
+    MaterialPageRoute(
+      builder: (context) => CourseDetailScreen(course: course),
+    ),
+  );
+
+  if (hasil != null && mounted) {
+    setState(() {
+      final index = _courses.indexWhere(
+        (item) => item.code == course.code,
+      );
+
+      if (index != -1) {
+        _courses[index] = KrsCourse(
+          code: course.code,
+          name: course.name,
+          lecturer: course.lecturer,
+          sks: hasil,
+          description: course.description,
+        );
+      }
+    });
   }
+}
 
   Future<void> _bukaFormTambah() async {
+    await Future.delayed(const Duration(milliseconds: 700));
+
+    if (!mounted) return;
+    
     final courseBaru = await Navigator.push<KrsCourse>(
       context,
       MaterialPageRoute<KrsCourse>(
@@ -106,6 +131,26 @@ class _KrsListScreenState extends State<KrsListScreen> {
   Widget build(BuildContext context) {
     final bool mendekatiBatas = _totalSks >= ambangPeringatanSks;
 
+    final daftarTampil = _courses.where((course) {
+  if (_filterSks == '1-2 SKS') {
+    return course.sks <= 2;
+  } else if (_filterSks == '3-4 SKS') {
+    return course.sks >= 3 && course.sks <= 4;
+  } else if (_filterSks == '5-6 SKS') {
+    return course.sks >= 5 && course.sks <= 6;
+  }
+  return true;
+}).toList();
+
+if (_urutan == 'Kode A-Z') {
+  daftarTampil.sort((a, b) => a.code.compareTo(b.code));
+} else if (_urutan == 'Kode Z-A') {
+  daftarTampil.sort((a, b) => b.code.compareTo(a.code));
+} else if (_urutan == 'SKS Terbesar') {
+  daftarTampil.sort((a, b) => b.sks.compareTo(a.sks));
+} else if (_urutan == 'SKS Terkecil') {
+  daftarTampil.sort((a, b) => a.sks.compareTo(b.sks));
+}
     return Scaffold(
       appBar: AppBar(
         title: const Text('Daftar KRS Mahasiswa'),
@@ -145,15 +190,66 @@ class _KrsListScreenState extends State<KrsListScreen> {
               ),
             ),
           ),
+
+          Padding(
+  padding: const EdgeInsets.symmetric(horizontal: 16),
+  child: Column(
+    children: [
+      DropdownButtonFormField<String>(
+        initialValue: _filterSks,
+        decoration: const InputDecoration(
+          labelText: 'Filter Jumlah SKS',
+          border: OutlineInputBorder(),
+        ),
+        items: const [
+          DropdownMenuItem(value: 'Semua', child: Text('Semua SKS')),
+          DropdownMenuItem(value: '1-2 SKS', child: Text('1-2 SKS')),
+          DropdownMenuItem(value: '3-4 SKS', child: Text('3-4 SKS')),
+          DropdownMenuItem(value: '5-6 SKS', child: Text('5-6 SKS')),
+        ],
+        onChanged: (value) {
+          if (value != null) {
+            setState(() {
+              _filterSks = value;
+            });
+          }
+        },
+      ),
+      const SizedBox(height: 8),
+      DropdownButtonFormField<String>(
+        initialValue: _urutan,
+        decoration: const InputDecoration(
+          labelText: 'Urutkan Mata Kuliah',
+          border: OutlineInputBorder(),
+        ),
+        items: const [
+          DropdownMenuItem(value: 'Kode A-Z', child: Text('Kode A-Z')),
+          DropdownMenuItem(value: 'Kode Z-A', child: Text('Kode Z-A')),
+          DropdownMenuItem(value: 'SKS Terbesar', child: Text('SKS Terbesar')),
+          DropdownMenuItem(value: 'SKS Terkecil', child: Text('SKS Terkecil')),
+        ],
+        onChanged: (value) {
+          if (value != null) {
+            setState(() {
+              _urutan = value;
+            });
+          }
+        },
+      ),
+      const SizedBox(height: 12),
+    ],
+  ),
+),
+
           Expanded(
-            child: _courses.isEmpty
+            child: daftarTampil.isEmpty
                 ? const Center(
                     child: Text('Belum ada mata kuliah yang dipilih.'),
                   )
                 : ListView.builder(
-                    itemCount: _courses.length,
+                    itemCount: daftarTampil.length,
                     itemBuilder: (context, index) {
-                      final course = _courses[index];
+                      final course = daftarTampil[index];
 
                       return KrsCourseTile(
                         course: course,
