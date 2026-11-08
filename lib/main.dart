@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'modul_02/modul_02_app.dart';
+import 'modul_03/modul_03_app.dart';
 
 void main() {
   runApp(const PoliwangiProfileApp());
@@ -186,6 +187,23 @@ class ProfileScreen extends StatelessWidget {
             },
             icon: const Icon(Icons.dashboard_rounded),
             label: const Text('Buka Dashboard Akademik'),
+          ),
+        ),
+                const SizedBox(height: 12),
+
+        SizedBox(
+          width: double.infinity,
+          child: OutlinedButton.icon(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const Modul03App(),
+                ),
+              );
+            },
+            icon: const Icon(Icons.assignment_rounded),
+            label: const Text('Buka Aplikasi KRS'),
           ),
         ),
       ],
