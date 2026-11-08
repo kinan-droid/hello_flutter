@@ -6,6 +6,7 @@ import 'pengayaan/modul_03/modul_03_fase_b_app.dart';
 import 'modul_04/modul_04_app.dart';
 import 'modul_05/modul_05_app.dart';
 import 'modul_06/modul_06_app.dart';
+import 'modul_07/modul_07_app.dart';
 
 void main() {
   runApp(
@@ -281,6 +282,23 @@ SizedBox(
     },
     icon: const Icon(Icons.lock_person_rounded),
     label: const Text('Modul 06 - Login & Session'),
+  ),
+),
+const SizedBox(height: 12),
+
+SizedBox(
+  width: double.infinity,
+  child: OutlinedButton.icon(
+    onPressed: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const Modul07App(),
+        ),
+      );
+    },
+    icon: const Icon(Icons.layers_rounded),
+    label: const Text('Modul 07 - Arsitektur Berlapis & MVVM'),
   ),
 ),
       ],
